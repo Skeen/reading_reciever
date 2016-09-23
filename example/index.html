@@ -1,0 +1,40 @@
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+$(function()
+{
+    var filecontents = "(1,2,3)";
+    var filename = "a.csv";
+
+    var blob = new Blob([filecontents]);
+
+    // use formdata to send block content in arraybuffer
+    var fd = new FormData();
+    var server = "http://localhost:3000";
+    fd.append("filename", filename);
+    fd.append("file", blob);
+    $.ajax({
+        url: server + "/upload",
+        data: fd,
+        processData: false,
+        contentType: false,
+        type: "POST",
+        success: function (result) {
+            /*
+            if (!result.success) {
+                alert(result.error);
+            }
+            */
+            //console.log("SEND");
+            document.getElementById("link").innerHTML = "<a href=\"" + server + "/" + result + "\">" + filename + "</a>";
+            console.log(result);
+        }
+    });
+});
+    </script>
+</head>
+<body>
+    <div id="link"></div>
+</body>
+</html>

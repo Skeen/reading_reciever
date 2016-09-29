@@ -60,7 +60,8 @@ app.get('/', function(req, res)
     res.sendFile("index.html", {root: __dirname});
 });
 
+var port = 3000;
 app.listen(3000, function() 
 {
-    console.log('Reading reciever running on port: 3000!');
+    console.log('Reading reciever server on port: ' + port);
 });

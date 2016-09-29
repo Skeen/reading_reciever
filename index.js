@@ -55,6 +55,11 @@ app.post('/upload', upload.single('file'), function(req, res, next)
     });
 });
 
+app.get('/', function(req, res)
+{
+    res.sendFile("index.html", {root: __dirname});
+});
+
 app.listen(3000, function() 
 {
     console.log('Reading reciever running on port: 3000!');

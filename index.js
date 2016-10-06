@@ -2,12 +2,19 @@ var express = require('express');
 var multer  = require('multer');
 var cors    = require('cors');
 var link    = require('fs-symlink');
+var mkdirp  = require('mkdirp');
 
 var app = express();
 app.use(cors());
 
 var upload_folder  = 'uploads';
 var symlink_folder = 'symlinks';
+
+// Ensure that folders are created
+var folder_callback = function(err) { if(err) console.error(err); };
+mkdirp(upload_folder, folder_callback);
+mkdirp(symlink_folder, folder_callback);
+
 
 // Serve contents of uploads folder
 var directory = require('serve-index');
@@ -16,6 +23,13 @@ app.use('/uploads/', express.static(upload_folder + '/'));
 // ... and of the symlinks folder
 app.use('/symlinks/', directory(symlink_folder, {'icons': true}));
 app.use('/symlinks/', express.static(symlink_folder + '/'));
+// ... and visualizations of the symlinks folder
+app.use('/visualize/', directory(symlink_folder, {'icons': true}));
+app.get('/visualize/:path/', function(req, res)
+{
+    var path_str = req.params.path;
+    res.redirect('http://skeen.website:3002/?file=' + path_str);
+});
 
 // Upload file to server
 var upload = multer({ dest: upload_folder + '/' });
@@ -60,8 +74,8 @@ app.get('/', function(req, res)
     res.sendFile("index.html", {root: __dirname});
 });
 
-var port = 3000;
-app.listen(3000, function() 
+var port = 3001;
+app.listen(port, function() 
 {
     console.log('Reading reciever server on port: ' + port);
 });

@@ -74,7 +74,8 @@ app.get('/', function(req, res)
     res.sendFile("index.html", {root: __dirname});
 });
 
-var port = 3001;
+var port = parseInt(process.argv[2]);
+var port = port || 3000;
 app.listen(port, function() 
 {
     console.log('Reading reciever server on port: ' + port);

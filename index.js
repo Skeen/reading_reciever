@@ -41,6 +41,7 @@ app.get('/visualize/:path*', function(req, res)
     }
 });
 
+app.use('/md5/', directory(symlink_folder, {'icons': true}));
 app.get('/md5/:path*', function(req, res)
 {
     var path_str = req.url.substr("/md5/".length);

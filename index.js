@@ -3,6 +3,7 @@ var multer  = require('multer');
 var cors    = require('cors');
 var link    = require('fs-symlink');
 var mkdirp  = require('mkdirp');
+var md5File = require('md5-file')
 
 var app = express();
 app.use(cors());
@@ -27,17 +28,36 @@ app.use('/symlinks/', express.static(symlink_folder + '/'));
 app.use('/visualize/', directory(symlink_folder, {'icons': true}));
 app.get('/visualize/:path*', function(req, res)
 {
-    var path_str = req.url.substr(11);
+    var path_str = req.url.substr("/visualize/".length);
     console.log(path_str);
     //var path_str = req.params.path;
     if(path_str.endsWith(".csv"))
     {
-	res.redirect('http://skeen.website:3002/?file=' + path_str);
+        res.redirect('http://skeen.website:3002/?file=' + path_str);
     }
     else
     {
-	res.redirect('/symlinks/' + path_str);
+        res.redirect('/symlinks/' + path_str);
     }
+});
+
+app.get('/md5/:path*', function(req, res)
+{
+    var path_str = req.url.substr("/md5/".length);
+    console.log(path_str);
+
+    md5File(symlink_folder + '/' + path_str, function(err, hash)
+    {
+        if(err)
+        {
+            res.status(500);
+            res.end(JSON.stringify(err));
+            return;
+        }
+
+        res.status(200);
+        res.end(hash);
+    });
 });
 
 // Upload file to server
